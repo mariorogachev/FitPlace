@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-main-page',
-  imports: [],
+  standalone: true,
+  imports: [RouterModule],
   templateUrl: './main-page.component.html',
-  styleUrl: './assets/css/bootstrap.min.css'
+  styleUrls: ['./main-page.component.css']
 })
-export class MainPageComponent {
+export class MainPageComponent {}
 
-}
