@@ -14,7 +14,7 @@ export const appConfig: ApplicationConfig = {
         redirect_uri: window.location.origin  // Redirect URL after authentication
       }
     }),
-  ]
+  ],
 };
 
 
