@@ -1,37 +1,48 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '@auth0/auth0-angular';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { AuthService } from '../auth.service';
+import { Observable } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
-@Component({
-  selector: 'app-auth-button',
-  template: `
-    <button (click)="handleAuthAction()">
-      {{ buttonLabel }}
-    </button>
-  `
-})
+@Component({ selector: 'app-auth-button', standalone: true, imports: [CommonModule], template: ` <button (click)="toggleAuth()"> {{ (isLoggedIn$ | async) ? 'Log Out' : 'Log In' }} </button> ` })
 export class SigninComponent implements OnInit {
-  buttonLabel: string = 'Login';
+  isLoggedIn$!: Observable<boolean>;
 
-  constructor(public auth: AuthService) {}
+  constructor(private auth: AuthService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    this.auth.isAuthenticated$.subscribe(isAuthenticated => {
-      this.buttonLabel = isAuthenticated ? 'Logout' : 'Login';
+    this.isLoggedIn$ = this.auth.isAuthenticated$();
+    this.isLoggedIn$.subscribe(isLoggedIn => {
+      console.log(`User is ${isLoggedIn ? 'logged in' : 'logged out'}`);
+      this.cdr.detectChanges(); // Ensure change detection is triggered
     });
   }
 
-  handleAuthAction(): void {
-    this.auth.isAuthenticated$.subscribe(isAuthenticated => {
-      if (isAuthenticated) {
-        this.auth.logout({ openUrl: false }).subscribe(() => {
-          window.location.href = window.location.origin;  // Redirect manually
-        });
+  toggleAuth(): void {
+    this.isLoggedIn$.subscribe(isLoggedIn => {
+      if (isLoggedIn) {
+        this.auth.logout();
+        console.log('User logged out');
+        window.location.href = window.location.origin; // Redirect manually
+        this.cdr.detectChanges(); // Ensure change detection is triggered
       } else {
-        this.auth.loginWithRedirect();
+        this.auth.login().subscribe(() => {
+          console.log('User logged in');
+          this.cdr.detectChanges(); // Ensure change detection is triggered
+        });
       }
     });
   }
 }
+
+
+
+
+
+
+
+
+
+
 
 
 

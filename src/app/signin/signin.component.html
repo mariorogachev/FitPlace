@@ -1,10 +1,2 @@
-<div *ngIf="isAuthenticated$ | async; else loginTemplate">
-    <h1>Welcome, {{ (user$ | async)?.name }}</h1>
-    <button (click)="logout()">Logout</button>
-  </div>
-  
-  <ng-template #loginTemplate>
-    <h1>Please log in</h1>
-    <button (click)="login()">Login with Auth0</button>
-  </ng-template>
+
   
