@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { SigninComponent } from '../signin/signin.component';
 @Component({
   selector: 'app-classes',
-  imports: [RouterModule,SigninComponent],
+  imports: [],
   templateUrl: './classes.component.html',
   styleUrl: './classes.component.css'
 })

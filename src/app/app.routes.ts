@@ -4,16 +4,15 @@ import { BlogComponent } from './blog/blog.component';
 import { ClassesComponent } from './classes/classes.component';
 import { ScheduleComponent } from './schedule/schedule.component';
 import { ContactComponent } from './contact/contact.component';
-import { SigninComponent } from './signin/signin.component';
+import { AuthGuard } from '@auth0/auth0-angular';
+
+
 
 export const routes: Routes = [
   { path: 'home', component: MainPageComponent },
   { path: 'blog', component: BlogComponent },
-  { path: 'signin', component:SigninComponent  },
   { path: 'contact', component: ContactComponent },
   { path: 'classes', component: ClassesComponent },
-  { path: 'schedule', component: ScheduleComponent },
-  { path: '', redirectTo: '/home', pathMatch: 'full' } 
+  { path: 'schedule', component: ScheduleComponent, canActivate: [AuthGuard] },
+  { path: '', redirectTo: '/home', pathMatch: 'full' } ,
 ];
-
-

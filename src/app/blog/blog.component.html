@@ -1,41 +1,44 @@
-<!-- ***** Header Area Start ***** -->
-<header style="background-color: #2c3540;" class="header-area header-sticky">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <nav class="main-nav">
-                    <!-- ***** Logo Start ***** -->
-                    <a href="index.html" class="logo">Training<em> Studio</em></a>
-                    <!-- ***** Logo End ***** -->
-                    <!-- ***** Menu Start ***** -->
-                    <ul class="nav">
-                        <li class="scroll-to-section">
-                            <a [routerLink]="['/home']" routerLinkActive="active" class="active">Home</a>
-                        </li>
-                        <li class="scroll-to-section">
-                            <a [routerLink]="['/blog']" routerLinkActive="active">Blog</a>
-                        </li>
-                        <li class="scroll-to-section">
-                            <a [routerLink]="['/classes']" routerLinkActive="active">Classes</a>
-                        </li>
-                        <li class="scroll-to-section">
-                            <a [routerLink]="['/schedule']" routerLinkActive="active">Schedules</a>
-                        </li>
-                        <li class="scroll-to-section">
-                            <a [routerLink]="['/contact']" routerLinkActive="active">Contact</a>
-                        </li> 
-                        <li class="main-button">
-                            <app-auth-button></app-auth-button>
-                        </li>
-                    </ul>
-                         
-                    <a class='menu-trigger'>
-                        <span>Menu</span>
-                    </a>
-                    <!-- ***** Menu End ***** -->
-                </nav>
-            </div>
-        </div>
+<div class="blog-container">
+  <h2 style="margin-bottom: 20px;" class="blog-title">Post a Blog</h2>
+  <form (ngSubmit)="onSubmit()" class="blog-form" *ngIf="auth.isAuthenticated$ | async; else notLoggedIn">
+    <mat-form-field appearance="fill" class="blog-form-field">
+      <mat-label>Title</mat-label>
+      <input matInput [(ngModel)]="blog.title" name="title" required>
+      <mat-error *ngIf="blog.title.trim() === ''">Title is required</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="fill" class="blog-form-field">
+      <mat-label>Content</mat-label>
+      <textarea matInput [(ngModel)]="blog.content" name="content" required></textarea>
+      <mat-error *ngIf="blog.content.trim() === ''">Content is required</mat-error>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit" class="blog-submit-button" [disabled]="blog.title.trim() === '' || blog.content.trim() === ''">Submit</button>
+    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  </form>
+
+  <h2 class="blog-title">Recent Blogs</h2>
+  <div *ngFor="let post of blogs" class="blog-post">
+    <h3 class="post-title">{{ post.title }}</h3>
+    <p class="post-content">{{ post.content }}</p>
+    <p class="post-author"><small>Posted by {{ post.author }} on {{ post.createdAt?.toDate() | date }}</small></p>
+    <button mat-button (click)="like(post.id)">Like {{ post.likes }}</button>
+    <button mat-button (click)="unlike(post.id)">Unlike</button>
+    <div class="comments-section">
+      <h4>Comments</h4>
+      <div *ngFor="let comment of post.comments">
+        <p><strong>{{ comment.userId }}</strong>: {{ comment.comment }}</p>
+      </div>
+      <mat-form-field appearance="fill">
+        <mat-label>Add a comment</mat-label>
+        <textarea matInput #commentInput></textarea>
+      </mat-form-field>
+      <button mat-button (click)="addComment(post.id, commentInput.value)">Post Comment</button>
     </div>
-</header>
-<!-- ***** Header Area End ***** -->
+    <div *ngIf="auth.user$ | async as user">
+      <button mat-button *ngIf="post.author === user.name" (click)="updateBlog(post.id, post.title, post.content)">Edit</button>
+    </div>
+  </div>
+</div>
+<ng-template #notLoggedIn>
+  <p style="font-size: 30px; margin: 30px;" class="blog-not-logged-in">Please log in to post a blog.</p>
+</ng-template>
+

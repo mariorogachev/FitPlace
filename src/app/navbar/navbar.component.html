@@ -1,0 +1,48 @@
+<header style="background-color: #2c3540; position: sticky;" class="header-area header-sticky">
+  <div class="container">
+      <div class="row">
+          <div class="col-12">
+              <nav class="main-nav">
+      <div class="logo">Fit<em> Place</em></div>
+      
+      <nav class="navbar">
+        <ul class="nav">
+          <li class="scroll-to-section">
+            <a mat-button [routerLink]="['/home']" routerLinkActive="active" class="active">Home</a>
+          </li>
+          <li class="scroll-to-section">
+            <a mat-button [routerLink]="['/blog']" routerLinkActive="active">Blog</a>
+          </li>
+          <li class="scroll-to-section">
+            <a mat-button [routerLink]="['/classes']" routerLinkActive="active">Classes</a>
+          </li>
+          <li class="scroll-to-section">
+            <a mat-button [routerLink]="['/schedule']" routerLinkActive="active">Schedules</a>
+          </li>
+          <li class="scroll-to-section">
+            <a mat-button [routerLink]="['/contact']" routerLinkActive="active">Contact</a>
+          </li>
+          <li class="scroll-to-section" *ngIf="auth.isAuthenticated$ | async">
+            <a (click)="logout()">Log out</a>
+          </li>
+          <li class="scroll-to-section" *ngIf="(auth.isAuthenticated$ | async) === false">
+            <a mat-button (click)="loginWithRedirect()">Log in</a>
+          </li>
+          
+        </ul> 
+        <div *ngIf="auth.user$ | async as user" class="user-info"> 
+           
+          <button mat-fab> <img [src]="user.picture" alt="Profile picture" class="nav-user-profile"/> 
+          </button> </div>
+
+      </nav>
+
+
+  
+
+
+
+
+
+
+
