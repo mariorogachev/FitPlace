@@ -1,0 +1,13 @@
+<div class="blog-dialog-container">
+  <h1 class="blog-dialog-title">{{ data.title }}</h1>
+  <div class="blog-dialog-content">
+    <p class="blog-dialog-text">{{ data.content }}</p>
+    <p class="blog-dialog-author"><strong>Author:</strong> {{ data.author }}</p>
+    <p class="blog-dialog-date"><small>Posted on: {{ data.createdAt?.toDate() | date }}</small></p>
+  </div>
+</div>
+
+
+  
+  
+

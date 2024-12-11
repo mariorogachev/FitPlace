@@ -1,59 +1,47 @@
-# FitPlace
+# FitPlace Blog Application
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.0.2.
+## Idea of the project
+FitPlace is a comprehensive web platform designed for a local gym and fitness community. This website offers a range of features to enhance the experience for gym-goers, allowing them to purchase memberships, interact with fellow fitness enthusiasts, and learn more about the gym's facilities and services. 
+## Overview
+FitPlace is a blog application built with Angular, Firebase, Auth0. It allows users to create, edit, and delete blog posts, as well as like, dislike, and comment on them. This application leverages Firebase for backend services and authentication with Auth0. Used Formspree for handling form submission.
 
-## Development server
+## Features
+- **User Authentication**: Secure login and registration using Auth0.
+- **CRUD Operations**: Create, Read, Update, and Delete blog posts.
+- **Likes and Dislikes**: Users can like or dislike posts and toggle their preferences.
+- **Comments**: Users can add comments to blog posts.
+- **Responsive Design**: Optimized for various screen sizes with Angular Material. (Not the best but i tried)
 
-To start a local development server, run:
+## Technologies Used
+- **Frontend**: Angular, Angular Material
+- **Backend**: Firebase Firestore
+- **Authentication**: Auth0
+- **Styling**: CSS
 
-```bash
-ng serve
-```
+## Setup and Installation
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/yourusername/fitplace-blog.git
+2. **Navigate to the project directory:**:
+   ```bash
+   cd FitPlace
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+3. **Install dependencies:**:
+   ```bash
+   npm install
+   
+4. **Run the application:**:
+   ```bash
+   ng serve
 
-## Code scaffolding
+Usage
+Navigate to http://localhost:4200 in your browser.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Register or log in to access all the features.
 
-```bash
-ng generate component component-name
-```
+Purchase or renew memberships, create and manage posts, and interact with other users.
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Create, edit, delete posts, and interact with other users' posts.
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Contact
+For any queries or suggestions, feel free to reach out at [mario.rogachev14@gmail.com].

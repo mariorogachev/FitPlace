@@ -1,6 +1,5 @@
-// blog.service.ts
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, setDoc, getDocs, query, updateDoc, increment, arrayUnion, arrayRemove, serverTimestamp } from 'firebase/firestore';
+import { Firestore, collection, doc, setDoc, getDocs, query, updateDoc, deleteDoc, increment, arrayUnion, arrayRemove, serverTimestamp } from 'firebase/firestore';
 import { firestore } from './firebase.config';
 import { Observable, from } from 'rxjs';
 
@@ -24,7 +23,9 @@ export class BlogService {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
       likes: 0,
+      dislikes: 0,
       likedBy: [],
+      dislikedBy: [],
       comments: []
     });
   }
@@ -45,7 +46,23 @@ export class BlogService {
     });
   }
 
-  addComment(blogId: string, comment: { userId: string, comment: string, createdAt: any, username: string }): Promise<void> {
+  dislikeBlog(blogId: string, userId: string): Promise<void> {
+    const blogDoc = doc(firestore, `${this.blogsCollection}/${blogId}`);
+    return updateDoc(blogDoc, {
+      dislikes: increment(1),
+      dislikedBy: arrayUnion(userId)
+    });
+  }
+
+  undislikeBlog(blogId: string, userId: string): Promise<void> {
+    const blogDoc = doc(firestore, `${this.blogsCollection}/${blogId}`);
+    return updateDoc(blogDoc, {
+      dislikes: increment(-1),
+      dislikedBy: arrayRemove(userId)
+    });
+  }
+
+  addComment(blogId: string, comment: { userId: string, userName: string, comment: string, createdAt: any }): Promise<void> {
     const blogDoc = doc(firestore, `${this.blogsCollection}/${blogId}`);
     return updateDoc(blogDoc, {
       comments: arrayUnion(comment)
@@ -59,7 +76,17 @@ export class BlogService {
       updatedAt: serverTimestamp()
     });
   }
+
+  deleteBlog(blogId: string): Promise<void> {
+    const blogDoc = doc(firestore, `${this.blogsCollection}/${blogId}`);
+    return deleteDoc(blogDoc);
+  }
 }
+
+
+
+
+
 
 
 

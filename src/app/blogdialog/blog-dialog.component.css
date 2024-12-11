@@ -1,0 +1,44 @@
+.blog-dialog-container {
+  background-color: #2c3540;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 800px;
+  min-height: 545px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.blog-dialog-title {
+  color: #FF5733;
+  font-size: 2em;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.blog-dialog-content {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+  color: white; /* Ensure content text is white */
+}
+
+.blog-dialog-text {
+  white-space: pre-wrap; /* Preserve line breaks and spaces */
+  text-align: left; /* Align text to the left for better readability */
+  margin-bottom: 20px; /* Add space below the content */
+  color: white;
+}
+
+.blog-dialog-author, .blog-dialog-date {
+  color: #FF5733;
+  margin-bottom: 10px;
+}
+
+.blog-dialog-date {
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+
+
+
+  

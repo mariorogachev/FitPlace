@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { BlogService } from '../blog.service';
 import { AuthService } from '@auth0/auth0-angular';
+import { MatDialog } from '@angular/material/dialog';
+import { BlogdialogComponent } from '../blogdialog/blog-dialog.component';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -17,7 +19,7 @@ import { FormsModule } from '@angular/forms';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    FormsModule
+    FormsModule,
   ]
 })
 export class BlogComponent implements OnInit {
@@ -25,10 +27,12 @@ export class BlogComponent implements OnInit {
   blog = { title: '', content: '', author: '' };
   errorMessage: string = '';
 
-  constructor(public auth: AuthService, private blogService: BlogService) { }
+  constructor(public auth: AuthService, private blogService: BlogService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
-    this.blogService.getBlogs().subscribe(blogs => this.blogs = blogs);
+    this.blogService.getBlogs().subscribe(blogs => {
+      this.blogs = blogs.map(blog => ({ ...blog, isEditing: false, editTitle: blog.title, editContent: blog.content }));
+    });
   }
 
   onSubmit() {
@@ -42,7 +46,9 @@ export class BlogComponent implements OnInit {
         const newBlog = { ...this.blog, author: user.name };
         this.blogService.postBlog(newBlog).then(() => {
           this.blog = { title: '', content: '', author: '' }; // Reset form
-          this.blogService.getBlogs().subscribe(blogs => this.blogs = blogs); // Reload blogs
+          this.blogService.getBlogs().subscribe(blogs => {
+            this.blogs = blogs.map(blog => ({ ...blog, isEditing: false, editTitle: blog.title, editContent: blog.content }));
+          }); // Reload blogs
         });
       } else {
         console.error("User name is undefined");
@@ -50,29 +56,50 @@ export class BlogComponent implements OnInit {
     });
   }
 
+  openDialog(blog: any): void {
+    this.dialog.open(BlogdialogComponent, {
+      data: blog,
+      width: '40%', // Make the dialog wider
+      height:'60%',
+      maxWidth: 'none' // Remove the max-width constraint
+    });
+  }
+  
+  
+  
+
   like(blogId: string) {
     this.auth.user$.subscribe(user => {
-      if (user?.sub && !this.hasLiked(blogId, user.sub)) {
-        this.blogService.likeBlog(blogId, user.sub).then(() => {
-          this.blogService.getBlogs().subscribe(blogs => this.blogs = blogs); // Reload blogs
-        });
+      if (user?.sub) {
+        const blog = this.blogs.find(b => b.id === blogId);
+        if (blog && blog.likedBy.includes(user.sub)) {
+          this.blogService.unlikeBlog(blogId, user.sub).then(() => {
+            this.blogService.getBlogs().subscribe(blogs => this.blogs = blogs); // Reload blogs
+          });
+        } else {
+          this.blogService.likeBlog(blogId, user.sub).then(() => {
+            this.blogService.getBlogs().subscribe(blogs => this.blogs = blogs); // Reload blogs
+          });
+        }
       }
     });
   }
 
-  unlike(blogId: string) {
+  dislike(blogId: string) {
     this.auth.user$.subscribe(user => {
-      if (user?.sub && this.hasLiked(blogId, user.sub)) {
-        this.blogService.unlikeBlog(blogId, user.sub).then(() => {
-          this.blogService.getBlogs().subscribe(blogs => this.blogs = blogs); // Reload blogs
-        });
+      if (user?.sub) {
+        const blog = this.blogs.find(b => b.id === blogId);
+        if (blog && blog.dislikedBy.includes(user.sub)) {
+          this.blogService.undislikeBlog(blogId, user.sub).then(() => {
+            this.blogService.getBlogs().subscribe(blogs => this.blogs = blogs); // Reload blogs
+          });
+        } else {
+          this.blogService.dislikeBlog(blogId, user.sub).then(() => {
+            this.blogService.getBlogs().subscribe(blogs => this.blogs = blogs); // Reload blogs
+          });
+        }
       }
     });
-  }
-
-  hasLiked(blogId: string, userId: string): boolean {
-    const blog = this.blogs.find(blog => blog.id === blogId);
-    return blog && blog.likedBy.includes(userId);
   }
 
   addComment(blogId: string, commentText: string) {
@@ -80,7 +107,7 @@ export class BlogComponent implements OnInit {
       if (user && user.sub && user.name) {
         const comment = {
           userId: user.sub,
-          username: user.name,
+          userName: user.name,
           comment: commentText,
           createdAt: new Date()
         };
@@ -93,12 +120,34 @@ export class BlogComponent implements OnInit {
     });
   }
 
-  updateBlog(blogId: string, title: string, content: string) {
-    this.blogService.updateBlog(blogId, { title, content }).then(() => {
+  toggleEdit(blog: any) {
+    blog.isEditing = !blog.isEditing;
+  }
+
+  saveEdit(blog: any) {
+    if (blog.editTitle.trim() !== '' && blog.editContent.trim() !== '') {
+      this.blogService.updateBlog(blog.id, { title: blog.editTitle, content: blog.editContent }).then(() => {
+        this.blogService.getBlogs().subscribe(blogs => {
+          this.blogs = blogs.map(b => ({ ...b, isEditing: false, editTitle: b.title, editContent: b.content }));
+        }); // Reload blogs
+      });
+    } else {
+      this.errorMessage = 'Title and content cannot be empty';
+    }
+  }
+
+  deleteBlog(blogId: string) {
+    this.blogService.deleteBlog(blogId).then(() => {
       this.blogService.getBlogs().subscribe(blogs => this.blogs = blogs); // Reload blogs
     });
   }
 }
+
+
+
+
+
+
 
 
 

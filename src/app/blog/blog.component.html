@@ -1,5 +1,5 @@
 <div class="blog-container">
-  <h2 style="margin-bottom: 20px;" class="blog-title">Post a Blog</h2>
+  <h2 class="blog-title">Post a Blog</h2>
   <form (ngSubmit)="onSubmit()" class="blog-form" *ngIf="auth.isAuthenticated$ | async; else notLoggedIn">
     <mat-form-field appearance="fill" class="blog-form-field">
       <mat-label>Title</mat-label>
@@ -17,15 +17,16 @@
 
   <h2 class="blog-title">Recent Blogs</h2>
   <div *ngFor="let post of blogs" class="blog-post">
-    <h3 class="post-title">{{ post.title }}</h3>
-    <p class="post-content">{{ post.content }}</p>
+    <h3 class="post-title" (click)="openDialog(post)">{{ post.title }}</h3>
+    <p class="post-content" (click)="openDialog(post)">{{ post.content }}</p>
     <p class="post-author"><small>Posted by {{ post.author }} on {{ post.createdAt?.toDate() | date }}</small></p>
-    <button mat-button (click)="like(post.id)">Like {{ post.likes }}</button>
-    <button mat-button (click)="unlike(post.id)">Unlike</button>
-    <div class="comments-section">
+    <button mat-icon-button (click)="like(post.id)"> <img style="width: 25px;" src="assets/images/thumbs-up.png" alt="Thumbs up" class="icon" />{{ post.likes }} </button>
+    <button mat-icon-button (click)="dislike(post.id)"> <img style="width: 25px;" src="assets/images/negative-vote.png" alt="Thumbs down" class="icon" />{{ post.dislikes }} </button>
+    
+    <div style="padding-top: 30px;" class="comments-section">
       <h4>Comments</h4>
       <div *ngFor="let comment of post.comments">
-        <p><strong>{{ comment.userId }}</strong>: {{ comment.comment }}</p>
+        <p style="color: white;border: 1;"><strong>{{ comment.userName }}</strong>: {{ comment.comment }}</p>
       </div>
       <mat-form-field appearance="fill">
         <mat-label>Add a comment</mat-label>
@@ -34,11 +35,25 @@
       <button mat-button (click)="addComment(post.id, commentInput.value)">Post Comment</button>
     </div>
     <div *ngIf="auth.user$ | async as user">
-      <button mat-button *ngIf="post.author === user.name" (click)="updateBlog(post.id, post.title, post.content)">Edit</button>
+      <button mat-button *ngIf="post.author === user.name" (click)="toggleEdit(post)">Edit</button>
+      <button mat-button *ngIf="post.author === user.name" (click)="deleteBlog(post.id)">Delete</button>
+    </div>
+
+    <div *ngIf="post.isEditing">
+      <mat-form-field appearance="fill" class="blog-form-field">
+        <mat-label>Title</mat-label>
+        <input matInput [(ngModel)]="post.editTitle">
+      </mat-form-field>
+      <mat-form-field appearance="fill" class="blog-form-field">
+        <mat-label>Content</mat-label>
+        <textarea matInput [(ngModel)]="post.editContent"></textarea>
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="saveEdit(post)">Save</button>
+      <button mat-raised-button (click)="toggleEdit(post)">Cancel</button>
     </div>
   </div>
 </div>
 <ng-template #notLoggedIn>
-  <p style="font-size: 30px; margin: 30px;" class="blog-not-logged-in">Please log in to post a blog.</p>
+  <p class="blog-not-logged-in">Please log in to post a blog.</p>
 </ng-template>
 

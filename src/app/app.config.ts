@@ -4,6 +4,7 @@ import { routes } from './app.routes';
 import { provideAuth0 } from '@auth0/auth0-angular';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogModule } from '@angular/material/dialog';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,7 +17,7 @@ export const appConfig: ApplicationConfig = {
         redirect_uri: window.location.origin
       }
     }),
-    importProvidersFrom(CommonModule, BrowserAnimationsModule)
+    importProvidersFrom(CommonModule, BrowserAnimationsModule,MatDialogModule)
   ],
 };
 
